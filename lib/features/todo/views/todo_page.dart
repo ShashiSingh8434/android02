@@ -104,7 +104,25 @@ class _TodoPageState extends State<TodoPage> {
                                   : TextDecoration.none,
                             ),
                           ),
-                          subtitle: Text(todo.description),
+                          subtitle: Column(
+                            mainAxisAlignment: .center,
+                            crossAxisAlignment: .start,
+                            children: [
+                              Text(todo.description),
+                              Row(
+                                children: [
+                                  TextButton(
+                                    onPressed: () => {},
+                                    child: Text("Rename"),
+                                  ),
+                                  TextButton(
+                                    onPressed: () => vm.deleteSingle(index),
+                                    child: Text("Delete"),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
                         );
                       },
                     );

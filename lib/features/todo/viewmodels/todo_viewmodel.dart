@@ -20,7 +20,7 @@ class TodoViewModel extends ChangeNotifier {
   }
 
   void toggleComplete(int index, TodoModel todo) {
-    repository.markComplete(
+    repository.updateTodo(
       index,
       TodoModel(
         title: todo.title,
@@ -29,6 +29,11 @@ class TodoViewModel extends ChangeNotifier {
       ),
     );
 
+    notifyListeners();
+  }
+
+  void deleteSingle(int index) {
+    repository.deleteTask(index);
     notifyListeners();
   }
 
