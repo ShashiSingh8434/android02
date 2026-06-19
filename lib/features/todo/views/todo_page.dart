@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
+import '../repositories/todo_repository.dart';
+import '../viewmodels/todo_viewmodel.dart';
+
 class TodoPage extends StatefulWidget {
   const TodoPage({super.key});
 
@@ -24,6 +27,7 @@ class _TodoPageState extends State<TodoPage> {
 
   @override
   Widget build(BuildContext context) {
+    final TodoViewModel vm = TodoViewModel(TodoRepository());
     return Scaffold(
       appBar: AppBar(title: Text("Todo App")),
       body: Center(
@@ -60,11 +64,12 @@ class _TodoPageState extends State<TodoPage> {
 
               TextButton(
                 onPressed: () => {
-                  box.add({
-                    'name': nameController.text,
-                    'email': emailController.text,
-                    'pass': passController.text,
-                  }),
+                  vm.addTodo(
+                    nameController.text,
+                    emailController.text,
+                    passController.text,
+                  ),
+
                   nameController.clear(),
                   emailController.clear(),
                   passController.clear(),
@@ -72,21 +77,23 @@ class _TodoPageState extends State<TodoPage> {
                 child: Text("Submit"),
               ),
               const SizedBox(height: 10),
-              TextButton(onPressed: () => {box.clear()}, child: Text("Delete")),
+              TextButton(onPressed: vm.clearTodo, child: Text("Delete")),
               const Divider(),
 
               Expanded(
                 child: ValueListenableBuilder(
                   valueListenable: box.listenable(),
                   builder: (context, box, child) {
+                    final todos = vm.todos;
+
                     return ListView.builder(
-                      itemCount: box.length,
+                      itemCount: todos.length,
                       itemBuilder: (context, index) {
-                        final user = box.getAt(index) as Map;
+                        final todo = todos[index];
 
                         return ListTile(
-                          title: Text(user['name']),
-                          subtitle: Text(user['email']),
+                          title: Text(todo.name),
+                          subtitle: Text(todo.email),
                         );
                       },
                     );
