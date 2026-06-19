@@ -13,66 +13,66 @@ class TodoPage extends StatefulWidget {
 
 class _TodoPageState extends State<TodoPage> {
   final box = Hive.box('info');
-  final nameController = TextEditingController();
-  final emailController = TextEditingController();
-  final passController = TextEditingController();
+  final titleController = TextEditingController();
+  final descController = TextEditingController();
+
+  late final TodoViewModel vm;
+
+  @override
+  void initState() {
+    super.initState();
+    vm = TodoViewModel(TodoRepository());
+  }
 
   @override
   void dispose() {
-    nameController.dispose();
-    emailController.dispose();
-    passController.dispose();
+    titleController.dispose();
+    descController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final TodoViewModel vm = TodoViewModel(TodoRepository());
     return Scaffold(
       appBar: AppBar(title: Text("Todo App")),
       body: Center(
         child: Padding(
-          padding: EdgeInsets.all(20),
+          padding: EdgeInsets.all(30),
           child: Column(
             mainAxisAlignment: .center,
             children: [
+              const SizedBox(height: 20),
+              Center(
+                child: Text(
+                  "Add Tasks :",
+                  style: TextStyle(fontStyle: FontStyle.italic),
+                ),
+              ),
               const SizedBox(height: 10),
               TextField(
-                controller: nameController,
+                controller: titleController,
                 decoration: const InputDecoration(
-                  labelText: "Enter Your Name: ",
+                  labelText: "Title",
                   border: OutlineInputBorder(),
                 ),
               ),
               const SizedBox(height: 10),
               TextField(
-                controller: emailController,
+                controller: descController,
                 decoration: const InputDecoration(
-                  labelText: "Email: ",
+                  labelText: "Description",
                   border: OutlineInputBorder(),
                 ),
               ),
               const SizedBox(height: 10),
-              TextField(
-                controller: passController,
-                decoration: const InputDecoration(
-                  labelText: "Pass: ",
-                  border: OutlineInputBorder(),
-                ),
-              ),
               const SizedBox(height: 10),
 
               TextButton(
                 onPressed: () => {
-                  vm.addTodo(
-                    nameController.text,
-                    emailController.text,
-                    passController.text,
-                  ),
+                  vm.addTodo(titleController.text, descController.text, false),
 
-                  nameController.clear(),
-                  emailController.clear(),
-                  passController.clear(),
+                  titleController.clear(),
+                  descController.clear(),
                 },
                 child: Text("Submit"),
               ),
@@ -92,8 +92,19 @@ class _TodoPageState extends State<TodoPage> {
                         final todo = todos[index];
 
                         return ListTile(
-                          title: Text(todo.name),
-                          subtitle: Text(todo.email),
+                          leading: Checkbox(
+                            value: todo.isCompleted,
+                            onChanged: (_) => {vm.toggleComplete(index, todo)},
+                          ),
+                          title: Text(
+                            todo.title,
+                            style: TextStyle(
+                              decoration: todo.isCompleted
+                                  ? TextDecoration.lineThrough
+                                  : TextDecoration.none,
+                            ),
+                          ),
+                          subtitle: Text(todo.description),
                         );
                       },
                     );

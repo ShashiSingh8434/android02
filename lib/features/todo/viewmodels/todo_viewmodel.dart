@@ -9,8 +9,27 @@ class TodoViewModel extends ChangeNotifier {
 
   List<TodoModel> get todos => repository.getTodos();
 
-  void addTodo(String name, String email, String password) {
-    repository.addTodo(TodoModel(name: name, email: email, password: password));
+  void addTodo(String title, String description, bool isCompleted) {
+    repository.addTodo(
+      TodoModel(
+        title: title,
+        description: description,
+        isCompleted: isCompleted,
+      ),
+    );
+  }
+
+  void toggleComplete(int index, TodoModel todo) {
+    repository.markComplete(
+      index,
+      TodoModel(
+        title: todo.title,
+        description: todo.description,
+        isCompleted: !todo.isCompleted,
+      ),
+    );
+
+    notifyListeners();
   }
 
   void clearTodo() {

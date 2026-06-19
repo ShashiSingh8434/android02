@@ -9,6 +9,10 @@ class TodoRepository {
     box.add(todo.toMap());
   }
 
+  void markComplete(int index, TodoModel todo) {
+    box.putAt(index, todo.toMap());
+  }
+
   void clearTodos() {
     box.clear();
   }
